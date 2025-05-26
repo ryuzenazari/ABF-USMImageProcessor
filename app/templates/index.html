@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Peningkatan Kualitas Gambar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
+            transition: transform .3s;
+        }
+        .card:hover {
+            transform: scale(1.01);
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .upload-area:hover {
+            border-color: #0d6efd;
+            background-color: #f0f8ff;
+        }
+        .upload-icon {
+            font-size: 64px;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+        .hidden {
+            display: none;
+        }
+        .preview-image {
+            max-width: 100%;
+            max-height: 300px;
+            margin: 15px auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,.1);
+        }
+        .btn-process {
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+            margin-top: 20px;
+        }
+        .btn-process:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(13, 110, 253, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold">Aplikasi Peningkatan Kualitas Gambar</h1>
+            <p class="lead">Menggunakan Filter Bilateral Adaptif & Unsharp Mask</p>
+        </div>
+        
+        <!-- Pesan Flash -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <div class="card p-4 mb-4">
+            <form method="POST" action="{{ url_for('process') }}" enctype="multipart/form-data">
+                <!-- Area Unggah Gambar -->
+                <div class="mb-4">
+                    <div class="upload-area" id="upload-area" onclick="document.getElementById('image').click()">
+                        <div class="upload-content">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h4 class="mb-3">Unggah Gambar untuk Ditingkatkan</h4>
+                            <p>Klik untuk memilih gambar atau tarik dan lepas di sini</p>
+                            <p class="text-muted small">Format yang didukung: PNG, JPG, JPEG, GIF, BMP, TIFF</p>
+                        </div>
+                        <img id="preview" class="preview-image hidden" alt="Preview Gambar">
+                    </div>
+                    <input type="file" name="image" id="image" class="hidden" accept="image/*" required>
+                </div>
+                
+                <!-- Tombol Proses -->
+                <div class="text-center">
+                    <button type="submit" class="btn btn-process">
+                        <i class="fas fa-magic me-2"></i>Tingkatkan Kualitas Gambar
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="card p-4">
+            <h5 class="card-title">Tentang Aplikasi</h5>
+            <p class="card-text">
+                Aplikasi ini menyediakan dua metode peningkatan kualitas gambar yang dapat Anda bandingkan:
+            </p>
+            
+            <div class="row mt-3">
+                <div class="col-md-6">
+                    <div class="card h-100 p-3">
+                        <h6 class="card-title"><i class="fas fa-magic me-2"></i>Filter Bilateral Adaptif</h6>
+                        <p class="card-text">
+                            Filter Bilateral Adaptif bekerja dengan mempertimbangkan jarak spasial dan perbedaan intensitas piksel,
+                            sehingga menghasilkan gambar yang lebih halus tanpa menghilangkan detail penting. 
+                            <br><br>
+                            <strong>Cocok untuk:</strong>
+                        </p>
+                        <ul>
+                            <li>Pengurangan noise (derau) pada gambar</li>
+                            <li>Pemeliharaan tepi (edge) dan detail penting</li>
+                            <li>Penghalusan area dengan gradasi warna yang halus</li>
+                            <li>Foto lama atau gambar berkualitas rendah</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card h-100 p-3">
+                        <h6 class="card-title"><i class="fas fa-adjust me-2"></i>Unsharp Mask</h6>
+                        <p class="card-text">
+                            Unsharp Mask adalah teknik penajaman gambar yang bekerja dengan mengurangkan versi kabur dari gambar asli,
+                            sehingga meningkatkan kontras di tepi dan detail.
+                            <br><br>
+                            <strong>Cocok untuk:</strong>
+                        </p>
+                        <ul>
+                            <li>Mempertajam gambar yang kurang fokus</li>
+                            <li>Meningkatkan kontras pada tepi</li>
+                            <li>Membuat detail dan tekstur lebih menonjol</li>
+                            <li>Gambar yang sudah relatif bersih dari noise</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="card-text mt-4">
+                Cukup unggah gambar, dan sistem akan menerapkan kedua filter dengan parameter optimal secara otomatis!
+                Anda dapat membandingkan hasil dari kedua filter dan memilih yang terbaik sesuai kebutuhan Anda.
+            </p>
+        </div>
+    </div>
+    
+    <footer class="py-3 mt-5 bg-light">
+        <div class="container text-center">
+            <p class="text-muted mb-0">
+                &copy; 2025 Aplikasi Peningkatan Kualitas Gambar | <span class="fw-bold">Filter Bilateral Adaptif & Unsharp Mask</span>
+            </p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Fungsi untuk menampilkan preview gambar
+        document.getElementById('image').addEventListener('change', function(e) {
+            const uploadArea = document.getElementById('upload-area');
+            const preview = document.getElementById('preview');
+            const uploadContent = document.querySelector('.upload-content');
+            
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    uploadContent.classList.add('hidden');
+                    uploadArea.style.border = '2px solid #0d6efd';
+                }
+                
+                reader.readAsDataURL(this.files[0]);
+            }
+        });
+        
+        // Fungsi untuk menangani drag dan drop
+        const uploadArea = document.getElementById('upload-area');
+        
+        uploadArea.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.style.border = '2px solid #0d6efd';
+            this.style.backgroundColor = '#f0f8ff';
+        });
+        
+        uploadArea.addEventListener('dragleave', function(e) {
+            e.preventDefault();
+            this.style.border = '2px dashed #ccc';
+            this.style.backgroundColor = '';
+        });
+        
+        uploadArea.addEventListener('drop', function(e) {
+            e.preventDefault();
+            
+            const preview = document.getElementById('preview');
+            const uploadContent = document.querySelector('.upload-content');
+            const fileInput = document.getElementById('image');
+            
+            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                fileInput.files = e.dataTransfer.files;
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.classList.remove('hidden');
+                    uploadContent.classList.add('hidden');
+                }
+                
+                reader.readAsDataURL(e.dataTransfer.files[0]);
+            }
+        });
+    </script>
+</body>
+</html> 

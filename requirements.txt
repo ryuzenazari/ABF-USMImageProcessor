@@ -1,0 +1,8 @@
+# Dependensi utama untuk aplikasi Image Enhancement
+Flask>=2.0.1           # Framework web
+Werkzeug>=2.0.1        # Utilitas WSGI untuk Flask
+
+# Library pemrosesan gambar
+opencv-python>=4.8.0   # Algoritma pengolahan gambar OpenCV
+numpy>=1.24.0          # Komputasi numerik untuk pemrosesan gambar
+Pillow>=9.0.0          # Alternatif pembaca gambar 

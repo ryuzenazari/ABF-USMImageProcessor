@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Peningkatan Kualitas Gambar</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/styles.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/img-comparison-slider@8/dist/index.js"></script>
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding-top: 20px;
+            padding-bottom: 50px;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        .card {
+            border-radius: 15px;
+            box-shadow: 0 6px 10px rgba(0,0,0,.08), 0 0 6px rgba(0,0,0,.05);
+            transition: transform .3s;
+            margin-bottom: 30px;
+        }
+        .card:hover {
+            transform: scale(1.01);
+        }
+        .img-container {
+            max-width: 100%;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,.1);
+        }
+        .img-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .image-header {
+            background: rgba(13, 110, 253, 0.1);
+            padding: 10px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            font-weight: bold;
+            text-align: center;
+            color: #0d6efd;
+        }
+        .btn-download {
+            background-color: #0d6efd;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(13, 110, 253, 0.2);
+        }
+        .btn-download:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(13, 110, 253, 0.3);
+            color: white;
+        }
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+            border-radius: 50px;
+            padding: 10px 25px;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(108, 117, 125, 0.2);
+        }
+        .btn-back:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(108, 117, 125, 0.3);
+            color: white;
+        }
+        .comparison-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .image-item {
+            flex: 1;
+            min-width: 300px;
+        }
+        
+        /* Img Comparison Slider custom styling */
+        img-comparison-slider {
+            --divider-width: 2px;
+            --divider-color: #0d6efd;
+            --default-handle-opacity: 1;
+            --default-handle-color: #0d6efd;
+            margin: 0 auto;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,.1);
+            max-width: 100%;
+        }
+        
+        .slider-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        
+        .view-toggle {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .view-toggle button {
+            background-color: #e9ecef;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            margin: 0 5px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        
+        .view-toggle button.active {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        /* Label styling for the slider */
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-weight: bold;
+            color: #555;
+        }
+        
+        .slider-label {
+            padding: 5px 10px;
+            background-color: rgba(13, 110, 253, 0.1);
+            border-radius: 4px;
+        }
+        
+        /* Filter selection tabs */
+        .filter-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        .filter-tabs .nav-link {
+            margin: 0 5px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .filter-tabs .nav-link.active {
+            background-color: #0d6efd;
+            color: white;
+            border-color: #0d6efd;
+        }
+        
+        .tab-content {
+            margin-top: 20px;
+        }
+        
+        .filter-description {
+            background-color: rgba(13, 110, 253, 0.05);
+            border-left: 3px solid #0d6efd;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            .comparison-container {
+                flex-direction: column;
+            }
+        }
+
+        .histogram-container {
+            margin-bottom: 20px;
+        }
+        
+        .histogram-bars {
+            display: flex;
+            height: 200px;
+            justify-content: space-around;
+            align-items: flex-end;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            background-color: #f8f9fa;
+        }
+        
+        .histogram-bar {
+            width: 80%;
+            margin: 0 1px;
+            border-top-left-radius: 2px;
+            border-top-right-radius: 2px;
+        }
+        
+        .histogram-labels {
+            display: flex;
+            justify-content: space-around;
+            font-size: 10px;
+            color: #666;
+        }
+
+        /* Diagram Garis untuk Histogram */
+        .line-chart-container {
+            position: relative;
+            height: 200px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .line-chart {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: flex-end;
+        }
+        
+        .chart-line {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+        }
+        
+        .y-axis {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 1px;
+            background-color: #ddd;
+        }
+        
+        .x-axis {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container py-4">
+        <div class="text-center mb-4">
+            <h1 class="display-5 fw-bold">Hasil Peningkatan Kualitas Gambar</h1>
+            <p class="lead">{{ message }}</p>
+        </div>
+        
+        <!-- Filter Tabs -->
+        <ul class="nav nav-tabs filter-tabs" id="filterTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="abf-tab" data-bs-toggle="tab" data-bs-target="#abf-content" type="button" role="tab" aria-controls="abf-content" aria-selected="true">
+                    <i class="fas fa-magic me-2"></i>Filter Bilateral Adaptif
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="usm-tab" data-bs-toggle="tab" data-bs-target="#usm-content" type="button" role="tab" aria-controls="usm-content" aria-selected="false">
+                    <i class="fas fa-adjust me-2"></i>Unsharp Mask
+                </button>
+            </li>
+        </ul>
+        
+        <!-- Tab Content -->
+        <div class="tab-content" id="filterTabsContent">
+            <!-- Filter Bilateral Adaptif Content -->
+            <div class="tab-pane fade show active" id="abf-content" role="tabpanel" aria-labelledby="abf-tab">
+                <div class="filter-description">
+                    <h5><i class="fas fa-info-circle me-2"></i>Tentang Filter Bilateral Adaptif</h5>
+                    <p>
+                        Filter Bilateral Adaptif bekerja dengan mempertimbangkan jarak spasial dan perbedaan intensitas piksel,
+                        sehingga menghasilkan gambar yang lebih halus tanpa menghilangkan detail penting.
+                        Filter ini sangat efektif untuk pengurangan noise sambil mempertahankan tepi gambar.
+                    </p>
+                </div>
+                
+                <!-- Tombol Toggle View untuk ABF -->
+                <div class="view-toggle">
+                    <button id="abf-view-side-by-side" class="active">Tampilan Berdampingan</button>
+                    <button id="abf-view-slider">Tampilan Slider</button>
+                </div>
+                
+                <!-- Perbandingan Gambar ABF (Tampilan Berdampingan) -->
+                <div class="card p-4" id="abf-side-by-side-view">
+                    <h5 class="card-title mb-4">Perbandingan Gambar dengan Filter Bilateral Adaptif</h5>
+                    
+                    <div class="comparison-container">
+                        <!-- Gambar Asli -->
+                        <div class="image-item">
+                            <div class="img-container">
+                                <div class="image-header">
+                                    <i class="fas fa-image me-2"></i>Gambar Asli
+                                </div>
+                                <img src="{{ url_for('uploaded_file', filename=input_image) }}" alt="Gambar Asli" class="img-fluid">
+                            </div>
+                        </div>
+                        
+                        <!-- Gambar Hasil ABF -->
+                        <div class="image-item">
+                            <div class="img-container">
+                                <div class="image-header">
+                                    <i class="fas fa-magic me-2"></i>Hasil Filter Bilateral Adaptif
+                                </div>
+                                <img src="{{ url_for('result_file', filename=abf_output_image) }}" alt="Hasil ABF" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Perbandingan Gambar ABF (Tampilan Slider) -->
+                <div class="card p-4 d-none" id="abf-slider-view">
+                    <h5 class="card-title mb-4">Perbandingan dengan Slider (Filter Bilateral Adaptif)</h5>
+                    
+                    <div class="slider-container">
+                        <!-- Menggunakan img-comparison-slider dari library -->
+                        <img-comparison-slider>
+                            <img slot="first" src="{{ url_for('uploaded_file', filename=input_image) }}" alt="Gambar Asli">
+                            <img slot="second" src="{{ url_for('result_file', filename=abf_output_image) }}" alt="Hasil ABF">
+                            <div slot="handle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#0d6efd" viewBox="0 0 24 24">
+                                    <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                                    <path d="M15.41,16.58L20,12L15.41,7.41L14,6L20,12L14,18L15.41,16.58Z" transform="rotate(180 17 12)"/>
+                                </svg>
+                            </div>
+                        </img-comparison-slider>
+                        <div class="slider-labels">
+                            <div class="slider-label">Asli</div>
+                            <div class="slider-label">Hasil ABF</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tombol Unduh untuk ABF -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('download_file', filename=abf_output_image) }}" class="btn btn-download mx-2">
+                        <i class="fas fa-download me-2"></i>Unduh Hasil Filter Bilateral Adaptif
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Unsharp Mask Content -->
+            <div class="tab-pane fade" id="usm-content" role="tabpanel" aria-labelledby="usm-tab">
+                <div class="filter-description">
+                    <h5><i class="fas fa-info-circle me-2"></i>Tentang Filter Unsharp Mask</h5>
+                    <p>
+                        Unsharp Mask adalah teknik penajaman gambar yang bekerja dengan mengurangkan versi kabur dari gambar asli,
+                        sehingga meningkatkan kontras di tepi dan detail. Filter ini sangat baik untuk mempertajam gambar, meningkatkan
+                        kontras pada tepi, dan membuat detail lebih menonjol.
+                    </p>
+                </div>
+                
+                <!-- Tombol Toggle View untuk USM -->
+                <div class="view-toggle">
+                    <button id="usm-view-side-by-side" class="active">Tampilan Berdampingan</button>
+                    <button id="usm-view-slider">Tampilan Slider</button>
+                </div>
+                
+                <!-- Perbandingan Gambar USM (Tampilan Berdampingan) -->
+                <div class="card p-4" id="usm-side-by-side-view">
+                    <h5 class="card-title mb-4">Perbandingan Gambar dengan Unsharp Mask</h5>
+                    
+                    <div class="comparison-container">
+                        <!-- Gambar Asli -->
+                        <div class="image-item">
+                            <div class="img-container">
+                                <div class="image-header">
+                                    <i class="fas fa-image me-2"></i>Gambar Asli
+                                </div>
+                                <img src="{{ url_for('uploaded_file', filename=input_image) }}" alt="Gambar Asli" class="img-fluid">
+                            </div>
+                        </div>
+                        
+                        <!-- Gambar Hasil USM -->
+                        <div class="image-item">
+                            <div class="img-container">
+                                <div class="image-header">
+                                    <i class="fas fa-adjust me-2"></i>Hasil Unsharp Mask
+                                </div>
+                                <img src="{{ url_for('result_file', filename=usm_output_image) }}" alt="Hasil USM" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Perbandingan Gambar USM (Tampilan Slider) -->
+                <div class="card p-4 d-none" id="usm-slider-view">
+                    <h5 class="card-title mb-4">Perbandingan dengan Slider (Unsharp Mask)</h5>
+                    
+                    <div class="slider-container">
+                        <!-- Menggunakan img-comparison-slider dari library -->
+                        <img-comparison-slider>
+                            <img slot="first" src="{{ url_for('uploaded_file', filename=input_image) }}" alt="Gambar Asli">
+                            <img slot="second" src="{{ url_for('result_file', filename=usm_output_image) }}" alt="Hasil USM">
+                            <div slot="handle">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#0d6efd" viewBox="0 0 24 24">
+                                    <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                                    <path d="M15.41,16.58L20,12L15.41,7.41L14,6L20,12L14,18L15.41,16.58Z" transform="rotate(180 17 12)"/>
+                                </svg>
+                            </div>
+                        </img-comparison-slider>
+                        <div class="slider-labels">
+                            <div class="slider-label">Asli</div>
+                            <div class="slider-label">Hasil USM</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Tombol Unduh untuk USM -->
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('download_file', filename=usm_output_image) }}" class="btn btn-download mx-2">
+                        <i class="fas fa-download me-2"></i>Unduh Hasil Unsharp Mask
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Perbandingan Kedua Filter (Bagian Baru) -->
+        <div class="card p-4 mt-4">
+            <h5 class="card-title">Perbandingan Kedua Filter</h5>
+            
+            <!-- Tombol Toggle View untuk perbandingan filter -->
+            <div class="view-toggle">
+                <button id="compare-view-side-by-side" class="active">Tampilan Berdampingan</button>
+                <button id="compare-view-slider">Tampilan Slider</button>
+            </div>
+            
+            <!-- Tampilan Berdampingan -->
+            <div id="compare-side-by-side-view">
+                <div class="comparison-container">
+                    <!-- Hasil Filter Bilateral Adaptif -->
+                    <div class="image-item">
+                        <div class="img-container">
+                            <div class="image-header">
+                                <i class="fas fa-magic me-2"></i>Hasil Filter Bilateral Adaptif
+                            </div>
+                            <img src="{{ url_for('result_file', filename=abf_output_image) }}" alt="Hasil ABF" class="img-fluid">
+                        </div>
+                    </div>
+                    
+                    <!-- Hasil Unsharp Mask -->
+                    <div class="image-item">
+                        <div class="img-container">
+                            <div class="image-header">
+                                <i class="fas fa-adjust me-2"></i>Hasil Unsharp Mask
+                            </div>
+                            <img src="{{ url_for('result_file', filename=usm_output_image) }}" alt="Hasil USM" class="img-fluid">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Tampilan Slider antara kedua filter -->
+            <div id="compare-slider-view" class="d-none">
+                <div class="slider-container">
+                    <!-- Slider perbandingan filter ABF vs USM -->
+                    <img-comparison-slider>
+                        <img slot="first" src="{{ url_for('result_file', filename=abf_output_image) }}" alt="Hasil ABF">
+                        <img slot="second" src="{{ url_for('result_file', filename=usm_output_image) }}" alt="Hasil USM">
+                        <div slot="handle">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="#0d6efd" viewBox="0 0 24 24">
+                                <path d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z"/>
+                                <path d="M15.41,16.58L20,12L15.41,7.41L14,6L20,12L14,18L15.41,16.58Z" transform="rotate(180 17 12)"/>
+                            </svg>
+                        </div>
+                    </img-comparison-slider>
+                    <div class="slider-labels">
+                        <div class="slider-label">Filter Bilateral Adaptif</div>
+                        <div class="slider-label">Unsharp Mask</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Tombol Kembali -->
+        <div class="text-center mt-4">
+            <a href="{{ url_for('index') }}" class="btn btn-back mx-2">
+                <i class="fas fa-arrow-left me-2"></i>Kembali
+            </a>
+        </div>
+        
+        <!-- Penjelasan Hasil -->
+        <div class="card p-4 mt-4">
+            <h5 class="card-title">Perbandingan Metode</h5>
+            <p class="card-text">
+                <strong>Filter Bilateral Adaptif:</strong> Bekerja dengan mempertimbangkan jarak spasial dan perbedaan intensitas piksel,
+                menghasilkan gambar yang lebih halus tanpa menghilangkan detail penting. Sangat baik untuk mengurangi noise sambil mempertahankan tepi gambar.
+            </p>
+            
+            <p class="card-text">
+                <strong>Unsharp Mask:</strong> Teknik penajaman yang bekerja dengan mengurangkan versi kabur dari gambar asli,
+                meningkatkan kontras di tepi dan detail. Sangat efektif untuk membuat gambar tampak lebih tajam dan menonjolkan detail.
+            </p>
+            
+            <h6 class="mt-4">Analisis Perbandingan:</h6>
+            <div class="card p-3 mb-3">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h6 class="text-center mb-3">Diagram Intensitas Gambar Asli</h6>
+                        <div class="histogram-container">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(255, 99, 132, 1);">Channel Merah</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in orig_hist_r %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(255, 99, 132, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(75, 192, 192, 1);">Channel Hijau</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in orig_hist_g %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(75, 192, 192, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(54, 162, 235, 1);">Channel Biru</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in orig_hist_b %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(54, 162, 235, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="histogram-labels">
+                                <div>0-31</div>
+                                <div>32-63</div>
+                                <div>64-95</div>
+                                <div>96-127</div>
+                                <div>128-159</div>
+                                <div>160-191</div>
+                                <div>192-223</div>
+                                <div>224-255</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-center mb-3">Diagram Intensitas Filter Bilateral Adaptif</h6>
+                        <div class="histogram-container">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(255, 99, 132, 1);">Channel Merah</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in abf_hist_r %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(255, 99, 132, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(75, 192, 192, 1);">Channel Hijau</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in abf_hist_g %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(75, 192, 192, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(54, 162, 235, 1);">Channel Biru</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in abf_hist_b %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(54, 162, 235, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="histogram-labels">
+                                <div>0-31</div>
+                                <div>32-63</div>
+                                <div>64-95</div>
+                                <div>96-127</div>
+                                <div>128-159</div>
+                                <div>160-191</div>
+                                <div>192-223</div>
+                                <div>224-255</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <h6 class="text-center mb-3">Diagram Intensitas Unsharp Mask</h6>
+                        <div class="histogram-container">
+                            <div class="row">
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(255, 99, 132, 1);">Channel Merah</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in usm_hist_r %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(255, 99, 132, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(75, 192, 192, 1);">Channel Hijau</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in usm_hist_g %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(75, 192, 192, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-center">
+                                    <h6 style="color: rgba(54, 162, 235, 1);">Channel Biru</h6>
+                                    <div class="line-chart-container">
+                                        <div class="y-axis"></div>
+                                        <div class="x-axis"></div>
+                                        <svg class="chart-line" viewBox="0 0 100 100" preserveAspectRatio="none">
+                                            <polyline 
+                                                points="
+                                                    {% for val in usm_hist_b %}
+                                                    {{ loop.index0 * 12.5 }},{{ 100 - val * 100 }}{% if not loop.last %} {% endif %}
+                                                    {% endfor %}
+                                                "
+                                                fill="none"
+                                                stroke="rgba(54, 162, 235, 1)"
+                                                stroke-width="2"
+                                            />
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="histogram-labels">
+                                <div>0-31</div>
+                                <div>32-63</div>
+                                <div>64-95</div>
+                                <div>96-127</div>
+                                <div>128-159</div>
+                                <div>160-191</div>
+                                <div>192-223</div>
+                                <div>224-255</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <div class="alert alert-secondary">
+                            <small class="text-muted">
+                                <i class="fas fa-info-circle me-1"></i>
+                                Diagram garis menampilkan distribusi piksel berdasarkan intensitas. Sumbu X menunjukkan tingkat intensitas (0-255) dan sumbu Y menunjukkan jumlah piksel.
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="card-text mt-3">
+                <strong>Kapan menggunakan masing-masing filter:</strong>
+            </p>
+            <ul>
+                <li><strong>Filter Bilateral Adaptif:</strong>
+                    <ul>
+                        <li>Foto lama dengan banyak noise atau grain</li>
+                        <li>Gambar dengan noise digital (seperti foto dalam kondisi cahaya rendah)</li>
+                        <li>Saat ingin mempertahankan tepi dan tekstur alami</li>
+                        <li>Untuk foto portrait di mana kelembutan kulit penting</li>
+                    </ul>
+                </li>
+                <li><strong>Unsharp Mask:</strong>
+                    <ul>
+                        <li>Foto yang kurang fokus atau sedikit kabur</li>
+                        <li>Gambar yang membutuhkan detail lebih tajam (seperti foto landscape)</li>
+                        <li>Saat kontras perlu ditingkatkan</li>
+                        <li>Untuk memunculkan tekstur dan pola halus</li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <div class="alert alert-info mt-3">
+                <i class="fas fa-lightbulb me-2"></i>
+                <strong>Tip:</strong> Untuk hasil terbaik, pertimbangkan menggunakan kombinasi kedua filter secara berurutan untuk beberapa gambar: 
+                Filter Bilateral Adaptif dahulu untuk mengurangi noise, kemudian Unsharp Mask untuk mempertajam detail.
+            </div>
+        </div>
+    </div>
+    
+    <footer class="py-3 mt-5 bg-light">
+        <div class="container text-center">
+            <p class="text-muted mb-0">
+                &copy; 2025 Aplikasi Peningkatan Kualitas Gambar | <span class="fw-bold">Filter Bilateral Adaptif & Unsharp Mask</span>
+            </p>
+        </div>
+    </footer>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // ABF Toggle view antara side-by-side dan slider
+            const abfViewSideBySide = document.getElementById('abf-view-side-by-side');
+            const abfViewSlider = document.getElementById('abf-view-slider');
+            const abfSideBySideView = document.getElementById('abf-side-by-side-view');
+            const abfSliderView = document.getElementById('abf-slider-view');
+            
+            abfViewSideBySide.addEventListener('click', function() {
+                abfSideBySideView.classList.remove('d-none');
+                abfSliderView.classList.add('d-none');
+                abfViewSideBySide.classList.add('active');
+                abfViewSlider.classList.remove('active');
+            });
+            
+            abfViewSlider.addEventListener('click', function() {
+                abfSideBySideView.classList.add('d-none');
+                abfSliderView.classList.remove('d-none');
+                abfViewSideBySide.classList.remove('active');
+                abfViewSlider.classList.add('active');
+            });
+            
+            // USM Toggle view antara side-by-side dan slider
+            const usmViewSideBySide = document.getElementById('usm-view-side-by-side');
+            const usmViewSlider = document.getElementById('usm-view-slider');
+            const usmSideBySideView = document.getElementById('usm-side-by-side-view');
+            const usmSliderView = document.getElementById('usm-slider-view');
+            
+            usmViewSideBySide.addEventListener('click', function() {
+                usmSideBySideView.classList.remove('d-none');
+                usmSliderView.classList.add('d-none');
+                usmViewSideBySide.classList.add('active');
+                usmViewSlider.classList.remove('active');
+            });
+            
+            usmViewSlider.addEventListener('click', function() {
+                usmSideBySideView.classList.add('d-none');
+                usmSliderView.classList.remove('d-none');
+                usmViewSideBySide.classList.remove('active');
+                usmViewSlider.classList.add('active');
+            });
+            
+            // Compare Both Filters Toggle
+            const compareViewSideBySide = document.getElementById('compare-view-side-by-side');
+            const compareViewSlider = document.getElementById('compare-view-slider');
+            const compareSideBySideView = document.getElementById('compare-side-by-side-view');
+            const compareSliderView = document.getElementById('compare-slider-view');
+            
+            compareViewSideBySide.addEventListener('click', function() {
+                compareSideBySideView.classList.remove('d-none');
+                compareSliderView.classList.add('d-none');
+                compareViewSideBySide.classList.add('active');
+                compareViewSlider.classList.remove('active');
+            });
+            
+            compareViewSlider.addEventListener('click', function() {
+                compareSideBySideView.classList.add('d-none');
+                compareSliderView.classList.remove('d-none');
+                compareViewSideBySide.classList.remove('active');
+                compareViewSlider.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html> 
