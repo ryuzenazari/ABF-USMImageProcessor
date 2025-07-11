@@ -38,7 +38,7 @@ Teknik Unsharp Mask berfungsi dengan:
 ### Langkah-langkah
 1. Clone repositori ini:
    ```bash
-   git clone https://github.com/yourusername/image-enhancement-app.git
+   git clone https://github.com/ryuzenazari/ABF-USMImageProcessor
    cd image-enhancement-app
    ```
 
